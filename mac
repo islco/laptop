@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# Welcome to the 18F laptop script!
+# Welcome to the ISL laptop script!
 # Be prepared to turn your laptop (or desktop)
-# into an awesome development machine.
+# into a fairly decent development machine.
 
 fancy_echo() {
   local fmt="$1"; shift
