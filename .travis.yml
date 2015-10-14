@@ -3,6 +3,8 @@ sudo: false
 
 addons:
   apt:
+    sources:
+      - deb http://mirrors.kernel.org/ubuntu utopic main universe
     packages:
       - shellcheck
 
