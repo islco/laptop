@@ -4,7 +4,7 @@ sudo: false
 addons:
   apt:
     sources:
-      - deb http://ftp.us.debian.org/debian unstable main contrib non-free
+      - debian-sid
     packages:
       - shellcheck
 
