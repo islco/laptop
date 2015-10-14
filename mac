@@ -160,6 +160,7 @@ brew_install_or_upgrade 'hub'
 append_to_file "$HOME/.zshrc" 'eval "$(hub alias -s)"'
 
 brew_install_or_upgrade 'node'
+brew_install_or_upgrade 'python'
 brew_install_or_upgrade 'python3'
 
 if ! pip3 list | ag "virtualenvwrapper" > /dev/null; then
