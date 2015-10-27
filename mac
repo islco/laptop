@@ -136,6 +136,16 @@ brew update
 
 brew_install_or_upgrade 'git'
 
+
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    fancy_echo "Installing oh-my-zsh ..."
+    sh -c "$(curl -fsSL \
+        https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+else
+    fancy_echo "oh-my-zsh already installed. Skipping ..."
+fi
+
+
 brew_tap 'homebrew/services'
 
 brew_install_or_upgrade 'postgresql'
@@ -153,11 +163,6 @@ fancy_echo 'Restarting redis...'
 brew services restart redis
 
 brew_install_or_upgrade 'imagemagick'
-brew_install_or_upgrade 'phantomjs'
-
-brew_install_or_upgrade 'hub'
-# shellcheck disable=SC2016
-append_to_file "$HOME/.zshrc" 'eval "$(hub alias -s)"'
 
 brew_install_or_upgrade 'node'
 brew_install_or_upgrade 'python'
@@ -172,6 +177,11 @@ if ! pip3 list | ag "virtualenvwrapper" > /dev/null; then
 fi
 
 append_to_file "$HOME/.gemrc" 'gem: --no-document'
+
+brew_install_or_upgrade 'ack'
+brew_install_or_upgrade 'cookiecutter'
+brew_install_or_upgrade 'tree'
+brew_install_or_upgrade 'wget'
 
 
 if ! command -v rbenv >/dev/null; then
