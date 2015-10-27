@@ -52,6 +52,8 @@ case "$SHELL" in
     ;;
 esac
 
+xcode-select --install
+
 brew_install_or_upgrade() {
   if brew_is_installed "$1"; then
     if brew_is_upgradable "$1"; then
@@ -135,16 +137,6 @@ fancy_echo "Updating Homebrew formulas ..."
 brew update
 
 brew_install_or_upgrade 'git'
-
-
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    fancy_echo "Installing oh-my-zsh ..."
-    sh -c "$(curl -fsSL \
-        https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-else
-    fancy_echo "oh-my-zsh already installed. Skipping ..."
-fi
-
 
 brew_tap 'homebrew/services'
 
@@ -240,4 +232,10 @@ if [ ! -d "$HOME/Projects" ]; then
     mkdir ~/Projects
 fi
 
-fancy_echo 'All done!'
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    fancy_echo "Installing oh-my-zsh ..."
+    sh -c "$(curl -fsSL \
+        https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+else
+    fancy_echo "oh-my-zsh already installed. Skipping ..."
+fi
