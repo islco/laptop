@@ -220,6 +220,7 @@ brew_cask_install 'flux'
 brew_cask_install 'github'
 brew_cask_install 'slack'
 brew_cask_install 'sublime-text3'
+brew_cask_install 'heroku-toolbelt'
 
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
@@ -233,6 +234,10 @@ if app_is_installed 'GitHub'; then
   fancy_echo "If not, you can do it by signing in to the GitHub app on your Mac."
 elif [ ! -f "$HOME/.ssh/github_rsa.pub" ]; then
   open ~/Applications/GitHub.app
+fi
+
+if [ ! -d "$HOME/Projects" ]; then
+    mkdir ~/Projects
 fi
 
 fancy_echo 'All done!'
