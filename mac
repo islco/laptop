@@ -226,8 +226,8 @@ if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
 fi
 
-append_to_file "$HOME/.rvmrc" 'rvm_auto_reload_flag=2'
-append_to_file "$HOME/.rvm/gemsets/global.gems" 'bundler'
+# append_to_file "$HOME/.rvmrc" 'rvm_auto_reload_flag=2'
+# append_to_file "$HOME/.rvm/gemsets/global.gems" 'bundler'
 
 if app_is_installed 'GitHub'; then
   fancy_echo "It looks like you've already configured your GitHub SSH keys."
