@@ -75,7 +75,7 @@ brew_is_upgradable() {
 }
 
 brew_tap_is_installed() {
-  brew tap | ag "$1" > /dev/null
+  brew tap | ack "$1" > /dev/null
 }
 
 brew_tap() {
@@ -168,7 +168,7 @@ brew_install_or_upgrade 'node'
 brew_install_or_upgrade 'python'
 brew_install_or_upgrade 'python3'
 
-if ! pip3 list | ag "virtualenvwrapper" > /dev/null; then
+if ! pip3 list | ack "virtualenvwrapper" > /dev/null; then
   fancy_echo 'Installing virtualenvwrapper...'
   pip3 install virtualenvwrapper
   append_to_file "$HOME/.zshrc" 'export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3'
