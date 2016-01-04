@@ -206,11 +206,21 @@ brew_install_or_upgrade 'brew-cask'
 
 brew_tap 'caskroom/versions'
 
+brew_cask_install 'atom'
 brew_cask_install 'flux'
 brew_cask_install 'github-desktop'
 brew_cask_install 'slack'
 brew_cask_install 'sublime-text3'
 brew_cask_install 'heroku-toolbelt'
+
+# install linters
+
+pip3 install flake8
+
+apm install linter
+apm install linter-flake8
+
+# load local file
 
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
