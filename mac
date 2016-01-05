@@ -169,28 +169,6 @@ fi
 
 append_to_file "$HOME/.gemrc" 'gem: --no-document'
 
-brew_install_or_upgrade 'ack'
-brew_install_or_upgrade 'cookiecutter'
-brew_install_or_upgrade 'tree'
-brew_install_or_upgrade 'wget'
-
-# if ! command -v rbenv >/dev/null; then
-#   if ! command -v rvm >/dev/null; then
-#     fancy_echo 'Installing RVM and the latest Ruby...'
-#     curl -L https://get.rvm.io | bash -s stable --ruby --auto-dotfiles --autolibs=enable
-#     . ~/.rvm/scripts/rvm
-#   else
-#     local_version="$(rvm -v 2> /dev/null | awk '$2 != ""{print $2}')"
-#     latest_version="$(curl -s https://raw.githubusercontent.com/wayneeseguin/rvm/stable/VERSION)"
-#     if [ "$local_version" != "$latest_version" ]; then
-#       fancy_echo 'Upgrading RVM...'
-#       rvm get stable --auto-dotfiles --autolibs=enable --with-gems="bundler"
-#     else
-#       fancy_echo "Already using the latest version of RVM. Skipping..."
-#     fi
-#   fi
-# fi
-
 fancy_echo 'Updating Rubygems...'
 gem update --system
 
@@ -200,8 +178,22 @@ fancy_echo "Configuring Bundler ..."
   number_of_cores=$(sysctl -n hw.ncpu)
   bundle config --global jobs $((number_of_cores - 1))
 
-brew_tap 'caskroom/cask'
 
+#
+# install utilities
+#
+
+brew_install_or_upgrade 'ack'
+brew_install_or_upgrade 'cookiecutter'
+brew_install_or_upgrade 'tree'
+brew_install_or_upgrade 'wget'
+
+
+#
+# set up and install casks
+#
+
+brew_tap 'caskroom/cask'
 brew_install_or_upgrade 'brew-cask'
 
 brew_tap 'caskroom/versions'
@@ -213,21 +205,27 @@ brew_cask_install 'slack'
 brew_cask_install 'sublime-text3'
 brew_cask_install 'heroku-toolbelt'
 
-# install linters
+
+#
+# configure Atom
+#
 
 pip3 install flake8
 
 apm install linter
 apm install linter-flake8
 
-# load local file
+echo "process.env.PATH = ['/usr/local/bin/', process.env.PATH].join(':')" \
+    >> $HOME/.atom/init.coffee
+
+
+#
+# load local setup file, if it exists
+#
 
 if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
 fi
-
-# append_to_file "$HOME/.rvmrc" 'rvm_auto_reload_flag=2'
-# append_to_file "$HOME/.rvm/gemsets/global.gems" 'bundler'
 
 if app_is_installed 'GitHub Desktop'; then
   fancy_echo "It looks like you've already configured your GitHub SSH keys."
