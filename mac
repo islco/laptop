@@ -212,6 +212,7 @@ brew_cask_install 'heroku-toolbelt'
 
 pip3 install flake8
 
+apm install editorconfig
 apm install linter
 apm install linter-flake8
 
@@ -233,6 +234,22 @@ if app_is_installed 'GitHub Desktop'; then
 elif [ ! -f "$HOME/.ssh/github_rsa.pub" ]; then
   open ~/Applications/GitHub\ Desktop.app
 fi
+
+#
+# copy default config files
+#
+
+RAWURL="https://raw.githubusercontent.com/istrategylabs/laptop/master"
+
+if [ ! -f "$HOME/.editorconfig" ]; then
+  curl "$RAWURL/config/editorconfig" > "$HOME/.editorconfig"
+fi
+
+if [ ! -f "$HOME/.vimrc" ]; then
+  curl "$RAWURL/config/vimrc" > "$HOME/.vimrc"
+fi
+
+# create default directories
 
 if [ ! -d "$HOME/Projects" ]; then
     mkdir ~/Projects
