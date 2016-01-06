@@ -152,7 +152,10 @@ brew_install_or_upgrade 'redis'
 fancy_echo 'Restarting redis...'
 brew services restart redis
 
-brew_install_or_upgrade 'imagemagick'
+brew_install_or_upgrade 'libsass'
+brew_install_or_upgrade 'libxml2'
+brew_install_or_upgrade 'openssl'
+brew_install_or_upgrade 'sqlite'
 
 brew_install_or_upgrade 'node'
 brew_install_or_upgrade 'ruby'
@@ -185,6 +188,8 @@ fancy_echo "Configuring Bundler ..."
 
 brew_install_or_upgrade 'ack'
 brew_install_or_upgrade 'cookiecutter'
+brew_install_or_upgrade 'docker'
+brew_install_or_upgrade 'docker-machine'
 brew_install_or_upgrade 'tree'
 brew_install_or_upgrade 'wget'
 
@@ -201,6 +206,7 @@ brew_tap 'caskroom/versions'
 brew_cask_install 'atom'
 brew_cask_install 'flux'
 brew_cask_install 'github-desktop'
+brew_cask_install 'heroku-toolbelt'
 brew_cask_install 'slack'
 brew_cask_install 'sublime-text3'
 brew_cask_install 'heroku-toolbelt'
