@@ -55,7 +55,7 @@ if [ ! -d "$HOME/.bin/" ]; then
 fi
 
 create_file "$HOME/.bash_profile"
-create_file "$HOME/.zshrc"
+create_file "$HOME/.zshrc.local"
 
 # shellcheck disable=SC2016
 append_to_file "$HOME/.zshrc" 'export PATH="$HOME/.bin:$PATH"'
