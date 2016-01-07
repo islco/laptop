@@ -277,12 +277,6 @@ curl_to_file "$HOME/.editorconfig" \
 curl_to_file "$HOME/.vimrc" \
   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/vimrc"
 
-# create default directories
-
-if [ ! -d "$HOME/Projects" ]; then
-    mkdir ~/Projects
-fi
-
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     fancy_echo "Installing oh-my-zsh ..."
     sh -c "$(curl -fsSL \
