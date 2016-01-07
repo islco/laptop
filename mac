@@ -28,6 +28,14 @@ append_to_file() {
   fi
 }
 
+create_file() {
+  local file="$1"
+
+  if [ ! -f "$file" ]; then
+    touch "$file"
+  fi
+}
+
 curl_to_file() {
   local file="$1"
   local url="$2"
@@ -46,9 +54,8 @@ if [ ! -d "$HOME/.bin/" ]; then
   mkdir "$HOME/.bin"
 fi
 
-if [ ! -f "$HOME/.zshrc" ]; then
-  touch "$HOME/.zshrc"
-fi
+create_file "$HOME/.bash_profile"
+create_file "$HOME/.zshrc"
 
 # shellcheck disable=SC2016
 append_to_file "$HOME/.zshrc" 'export PATH="$HOME/.bin:$PATH"'
