@@ -4,6 +4,13 @@
 # Be prepared to turn your laptop (or desktop)
 # into a fairly decent development machine.
 
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "oh-my-zsh is required to continue"
+  echo "run the following command, then re-run this script:"
+  echo "sh -c \"\$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\""
+  exit 1
+else
+
 fancy_echo() {
   local fmt="$1"; shift
 
@@ -14,14 +21,6 @@ fancy_echo() {
 append_to_file() {
   local file="$1"
   local text="$2"
-
-  if [ "$file" = "$HOME/.zshrc" ]; then
-    if [ -w "$HOME/.zshrc.local" ]; then
-      file="$HOME/.zshrc.local"
-    else
-      file="$HOME/.zshrc"
-    fi
-  fi
 
   if ! grep -qs "^$text$" "$file"; then
     printf "\n%s\n" "$text" >> "$file"
@@ -55,18 +54,17 @@ if [ ! -d "$HOME/.bin/" ]; then
 fi
 
 create_file "$HOME/.bash_profile"
-create_file "$HOME/.zshrc.local"
 
 # shellcheck disable=SC2016
 append_to_file "$HOME/.zshrc" 'export PATH="$HOME/.bin:$PATH"'
 
-case "$SHELL" in
-  */zsh) : ;;
-  *)
-    fancy_echo "Changing your shell to zsh ..."
-      chsh -s "$(which zsh)"
-    ;;
-esac
+# case "$SHELL" in
+#   */zsh) : ;;
+#   *)
+#     fancy_echo "Changing your shell to zsh ..."
+#       chsh -s "$(which zsh)"
+#     ;;
+# esac
 
 brew_install_or_upgrade() {
   if brew_is_installed "$1"; then
@@ -276,11 +274,3 @@ curl_to_file "$HOME/.editorconfig" \
 
 curl_to_file "$HOME/.vimrc" \
   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/vimrc"
-
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    fancy_echo "Installing oh-my-zsh ..."
-    sh -c "$(curl -fsSL \
-        https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-else
-    fancy_echo "oh-my-zsh already installed. Skipping ..."
-fi
