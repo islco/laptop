@@ -4,12 +4,31 @@
 # Be prepared to turn your laptop (or desktop)
 # into a fairly decent development machine.
 
+#
+# install OS X developer tools
+#
+
+xcode-select -p > /dev/null 2>&1
+
+if [ $? -ne 0 ]
+then
+    xcode-select --install
+fi
+
+#
+# check for oh-my-zsh
+#
+
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "oh-my-zsh is required to continue"
   echo "run the following command, then re-run this script:"
   echo "sh -c \"\$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\""
   exit 1
 fi
+
+#
+# utilities
+#
 
 fancy_echo() {
   local fmt="$1"; shift
@@ -49,14 +68,7 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
-if [ ! -d "$HOME/.bin/" ]; then
-  mkdir "$HOME/.bin"
-fi
-
 create_file "$HOME/.bash_profile"
-
-# shellcheck disable=SC2016
-append_to_file "$HOME/.zshrc" 'export PATH="$HOME/.bin:$PATH"'
 
 # case "$SHELL" in
 #   */zsh) : ;;
