@@ -9,7 +9,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "run the following command, then re-run this script:"
   echo "sh -c \"\$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\""
   exit 1
-else
+fi
 
 fancy_echo() {
   local fmt="$1"; shift
