@@ -167,8 +167,19 @@ brew_install_or_upgrade 'libxml2'
 brew_install_or_upgrade 'openssl'
 brew_install_or_upgrade 'sqlite'
 
+#
+# Node
+#
+
 brew_install_or_upgrade 'node'
-brew_install_or_upgrade 'ruby'
+
+curl -fsS \
+  'https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh' | bash
+
+#
+# Python
+#
+
 brew_install_or_upgrade 'python'
 brew_install_or_upgrade 'python3'
 
@@ -179,6 +190,12 @@ if ! pip3 list | ack "virtualenvwrapper" > /dev/null; then
   append_to_file "$HOME/.zshrc" 'export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv'
   append_to_file "$HOME/.zshrc" 'source /usr/local/bin/virtualenvwrapper.sh'
 fi
+
+#
+# Ruby
+#
+
+brew_install_or_upgrade 'ruby'
 
 append_to_file "$HOME/.gemrc" 'gem: --no-document'
 
