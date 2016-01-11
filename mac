@@ -267,21 +267,6 @@ echo "process.env.PATH = ['/usr/local/bin/', process.env.PATH].join(':')" \
 
 
 #
-# load local setup file, if it exists
-#
-
-if [ -f "$HOME/.laptop.local" ]; then
-  . "$HOME/.laptop.local"
-fi
-
-if app_is_installed 'GitHub Desktop'; then
-  fancy_echo "It looks like you've already configured your GitHub SSH keys."
-  fancy_echo "If not, you can do it by signing in to the GitHub app on your Mac."
-elif [ ! -f "$HOME/.ssh/github_rsa.pub" ]; then
-  open ~/Applications/GitHub\ Desktop.app
-fi
-
-#
 # copy default config files
 #
 
