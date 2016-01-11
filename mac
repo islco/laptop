@@ -220,6 +220,16 @@ fancy_echo "Configuring Bundler ..."
 
 
 #
+# Go
+#
+
+brew_install_or_upgrade 'go'
+
+bash < <(curl -s -S -L \
+  https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+
+
+#
 # install utilities
 #
 
