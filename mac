@@ -70,47 +70,6 @@ set -e
 
 create_file "$HOME/.bash_profile"
 
-# case "$SHELL" in
-#   */zsh) : ;;
-#   *)
-#     fancy_echo "Changing your shell to zsh ..."
-#       chsh -s "$(which zsh)"
-#     ;;
-# esac
-
-brew_install_or_upgrade() {
-  if brew_is_installed "$1"; then
-    if brew_is_upgradable "$1"; then
-      fancy_echo "Upgrading %s ..." "$1"
-      brew upgrade "$@"
-    else
-      fancy_echo "Already using the latest version of %s. Skipping ..." "$1"
-    fi
-  else
-    fancy_echo "Installing %s ..." "$1"
-    brew install "$@"
-  fi
-}
-
-brew_is_installed() {
-  brew list -1 | grep -Fqx "$1"
-}
-
-brew_is_upgradable() {
-  ! brew outdated --quiet "$1" >/dev/null
-}
-
-brew_tap_is_installed() {
-  brew tap | ack "$1" > /dev/null
-}
-
-brew_tap() {
-  if ! brew_tap_is_installed "$1"; then
-    fancy_echo "Tapping $1..."
-    brew tap "$1" 2> /dev/null
-  fi
-}
-
 gem_install_or_update() {
   if gem list "$1" | grep "^$1 ("; then
     fancy_echo "Updating %s ..." "$1"
@@ -121,29 +80,10 @@ gem_install_or_update() {
   fi
 }
 
-brew_cask_expand_alias() {
-  brew cask info "$1" 2>/dev/null | head -1 | awk '{gsub(/:/, ""); print $1}'
-}
-
-brew_cask_is_installed() {
-  local NAME
-  NAME=$(brew_cask_expand_alias "$1")
-  brew cask list -1 | grep -Fqx "$NAME"
-}
-
 app_is_installed() {
   local app_name
   app_name=$(echo "$1" | cut -d'-' -f1)
   find /Applications -iname "$app_name*" -maxdepth 1 | egrep '.*' > /dev/null
-}
-
-brew_cask_install() {
-  if app_is_installed "$1" || brew_cask_is_installed "$1"; then
-    fancy_echo "$1 is already installed. Skipping..."
-  else
-    fancy_echo "Installing $1..."
-    brew cask install "$@"
-  fi
 }
 
 if ! command -v brew >/dev/null; then
@@ -153,46 +93,37 @@ if ! command -v brew >/dev/null; then
 
     # shellcheck disable=SC2016
     append_to_file "$HOME/.zshrc" 'export PATH="/usr/local/bin:$PATH"'
+
 else
   fancy_echo "Homebrew already installed. Skipping ..."
 fi
 
-fancy_echo "Updating Homebrew formulas ..."
 brew update
+brew tap 'homebrew/bundle'
 
-brew_install_or_upgrade 'git'
+curl_to_file "$HOME/Brewfile" \
+  "https://raw.githubusercontent.com/istrategylabs/laptop/master/Brewfile"
 
-brew_tap 'homebrew/services'
+brew bundle --file="$HOME/Brewfile"
 
-brew_install_or_upgrade 'postgresql'
-fancy_echo 'Restarting postgres...'
-brew services restart postgresql
-
-brew_install_or_upgrade 'redis'
-fancy_echo 'Restarting redis...'
-brew services restart redis
-
-brew_install_or_upgrade 'libsass'
-brew_install_or_upgrade 'libxml2'
-brew_install_or_upgrade 'openssl'
-brew_install_or_upgrade 'sqlite'
+rm "$HOME/Brewfile"
 
 #
+# languages
+#
+
+
+# Go
+bash < <(curl -s -S -L \
+  https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+
+
 # Node
-#
-
-brew_install_or_upgrade 'node'
-
 curl -fsS \
   'https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh' | bash
 
-#
+
 # Python
-#
-
-brew_install_or_upgrade 'python'
-brew_install_or_upgrade 'python3'
-
 if ! pip3 list | ack "virtualenvwrapper" > /dev/null; then
   fancy_echo 'Installing virtualenvwrapper...'
   pip3 install virtualenvwrapper
@@ -201,65 +132,15 @@ if ! pip3 list | ack "virtualenvwrapper" > /dev/null; then
   append_to_file "$HOME/.zshrc" 'source /usr/local/bin/virtualenvwrapper.sh'
 fi
 
-#
+
 # Ruby
-#
-
-brew_install_or_upgrade 'ruby'
-
 append_to_file "$HOME/.gemrc" 'gem: --no-document'
-
 fancy_echo 'Updating Rubygems...'
 gem update --system
-
 gem_install_or_update 'bundler'
-
 fancy_echo "Configuring Bundler ..."
   number_of_cores=$(sysctl -n hw.ncpu)
   bundle config --global jobs $((number_of_cores - 1))
-
-
-#
-# Go
-#
-
-brew_install_or_upgrade 'go'
-
-bash < <(curl -s -S -L \
-  https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
-
-
-#
-# install utilities
-#
-
-brew_install_or_upgrade 'ack'
-brew_install_or_upgrade 'cookiecutter'
-brew_install_or_upgrade 'docker'
-brew_install_or_upgrade 'docker-machine'
-brew_install_or_upgrade 'tree'
-brew_install_or_upgrade 'wget'
-
-
-#
-# set up and install casks
-#
-
-brew_tap 'caskroom/cask'
-brew_tap 'caskroom/versions'
-
-brew_cask_install 'atom'
-brew_cask_install 'dropbox'
-brew_cask_install 'flux'
-brew_cask_install 'firefox'
-brew_cask_install 'github-desktop'
-brew_cask_install 'google-chrome'
-brew_cask_install 'heroku-toolbelt'
-brew_cask_install 'iterm2'
-brew_cask_install 'lastpass'
-brew_cask_install 'slack'
-brew_cask_install 'sublime-text3'
-brew_cask_install 'tower'
 
 
 #
@@ -270,7 +151,13 @@ pip3 install flake8
 
 apm install editorconfig
 apm install linter
+apm install linter-eslint
 apm install linter-flake8
+apm install linter-jshint
+apm install script
+apm install set-syntax
+
+
 
 echo "process.env.PATH = ['/usr/local/bin/', process.env.PATH].join(':')" \
     >> $HOME/.atom/init.coffee
