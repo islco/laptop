@@ -1,5 +1,6 @@
-tap 'caskroom/cask'
 tap 'homebrew/services'
+tap 'caskroom/cask'
+tap 'caskroom/versions'
 
 # libs
 brew 'libsass'
