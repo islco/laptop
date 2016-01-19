@@ -114,7 +114,8 @@ rm "$HOME/Brewfile"
 
 
 # Go
-bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+curl -fsS \
+  'https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer' | bash
 
 
 # Node
