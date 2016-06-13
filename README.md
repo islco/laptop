@@ -174,4 +174,4 @@ thoughtbot's original work remains covered under an [MIT License](https://github
 >
 > All contributions to this project will be released under the CC0 dedication. By submitting a pull request, you are agreeing to comply with this waiver of copyright interest.
 
-ISL's original work is covered under a BSD 2-Clause License.
+ISL's original work is covered under a MIT License.

@@ -108,6 +108,14 @@ brew bundle --file="$HOME/Brewfile"
 
 rm "$HOME/Brewfile"
 
+
+#
+# PostgreSQL
+#
+
+initdb /usr/local/var/postgres
+
+
 #
 # languages
 #
