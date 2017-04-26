@@ -172,6 +172,8 @@ apm install set-syntax
 echo "process.env.PATH = ['/usr/local/bin/', process.env.PATH].join(':')" \
     >> $HOME/.atom/init.coffee
 
+# Foreman 
+gem install foreman
 
 #
 # copy default config files
