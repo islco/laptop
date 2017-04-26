@@ -43,6 +43,3 @@ cask 'lastpass'
 cask 'slack'
 cask 'sublime-text'
 cask 'tower'
-
-# forman
-gem install foreman
