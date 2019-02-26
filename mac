@@ -110,6 +110,8 @@ brew_install_or_upgrade 'libsass'
 brew_install_or_upgrade 'libxml2'
 brew_install_or_upgrade 'openssl'
 brew_install_or_upgrade 'sqlite'
+brew_install_or_upgrade 'pkg-config'
+brew_install_or_upgrade 'composer'
 
 # services
 brew services stop --all
@@ -125,6 +127,7 @@ brew_install_or_upgrade 'nvm'
 brew_install_or_upgrade 'python3'
 brew_install_or_upgrade 'pipenv'
 brew_install_or_upgrade 'ruby'
+brew_install_or_upgrade 'php'
 
 # command line utilities
 brew_install_or_upgrade 'ack'
@@ -161,6 +164,12 @@ fancy_echo 'Updating Rubygems...'
 gem update --system
 gem_install_or_update 'foreman'
 
+
+
+# PHP
+pecl config-get ext_dir
+pecl install imagick
+pecl install redis
 
 #
 # configure Atom
