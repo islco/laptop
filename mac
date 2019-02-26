@@ -180,8 +180,9 @@ code --install-extension mikestead.dotenv               # DotENV
 code --install-extension batisteo.vscode-django         # Django
 code --install-extension EditorConfig.EditorConfig      # EditorConfig
 code --install-extension dbaeumer.vscode-eslint         # ESlint
+code --install-extension esbenp.prettier-vscode         # Prettier
 code --install-extension ms-python.python               # Python
-code --install-extension robertohuertasm.vscode-icons   # vscode-icons
+code --install-extension robertohuertasm.vscode-icons   # vscode-icons'
 
 #
 # copy default config files
@@ -189,10 +190,6 @@ code --install-extension robertohuertasm.vscode-icons   # vscode-icons
 
 # curl_to_file "$HOME/.editorconfig" \
 #   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/editorconfig"
-#
-# curl_to_file "$HOME/.vimrc" \
-#   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/vimrc"
-
 
 fancy_echo "Finished!"
 fancy_echo "Add the following line to the end of .bash_profile or .zshrc:"
