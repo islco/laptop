@@ -15,6 +15,10 @@ then
     xcode-select --install
 fi
 
+# fix for pyenv https://github.com/pyenv/pyenv/issues/1219
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+
+
 
 #
 # utilities
@@ -111,7 +115,6 @@ brew_install_or_upgrade 'libxml2'
 brew_install_or_upgrade 'openssl'
 brew_install_or_upgrade 'sqlite'
 brew_install_or_upgrade 'pkg-config'
-brew_install_or_upgrade 'composer'
 
 # services
 brew services stop --all
@@ -124,10 +127,12 @@ brew_install_or_upgrade 'redis'
 # languages
 brew_install_or_upgrade 'node'
 brew_install_or_upgrade 'nvm'
-brew_install_or_upgrade 'python3'
+brew_install_or_upgrade 'python'
 brew_install_or_upgrade 'pipenv'
 brew_install_or_upgrade 'ruby'
 brew_install_or_upgrade 'php'
+
+brew_install_or_upgrade 'composer'
 
 # command line utilities
 brew_install_or_upgrade 'ack'
@@ -141,8 +146,8 @@ brew cask install 'firefox'
 brew cask install 'github-desktop'
 brew cask install 'google-chrome'
 brew cask install 'iterm2'
-brew cask install 'slack'
 brew cask install 'tower'
+brew cask install 'visual-studio-code'
 
 
 #
@@ -151,11 +156,7 @@ brew cask install 'tower'
 
 
 # Python
-if ! pip3 list | ack "pew" > /dev/null; then
-  fancy_echo 'Installing pew...'
-  pip3 install pew
-  append_to_file "$LAPTOPRC" "source $(pew shell_config)"
-fi
+curl -sf https://gist.githubusercontent.com/jcarbaugh/fd01d825437b735cb44dbac8a11aff1c/raw/2b540829c71c68166c9678cd2ef2d0484e142bde/repython.sh | sh
 
 
 # Ruby
@@ -165,22 +166,22 @@ gem update --system
 gem_install_or_update 'foreman'
 
 
-
 # PHP
-pecl config-get ext_dir
+# pecl config-get ext_dir
 pecl install imagick
 pecl install redis
 
-#
-# configure Atom
-#
-apm install editorconfig
-apm install linter
-apm install linter-eslint
-apm install linter-flake8
-apm install linter-jshint
-apm install set-syntax
 
+#
+# configure VSCode
+#
+
+code --install-extension mikestead.dotenv               # DotENV
+code --install-extension batisteo.vscode-django         # Django
+code --install-extension EditorConfig.EditorConfig      # EditorConfig
+code --install-extension dbaeumer.vscode-eslint         # ESlint
+code --install-extension ms-python.python               # Python
+code --install-extension robertohuertasm.vscode-icons   # vscode-icons
 
 #
 # copy default config files
