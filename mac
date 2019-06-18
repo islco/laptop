@@ -15,16 +15,10 @@ then
     xcode-select --install
 fi
 
-#
-# check for oh-my-zsh
-#
+# fix for pyenv https://github.com/pyenv/pyenv/issues/1219
+sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
 
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  echo "oh-my-zsh is required to continue"
-  echo "run the following command, then re-run this script:"
-  echo "sh -c \"\$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)\""
-  exit 1
-fi
+
 
 #
 # utilities
@@ -68,7 +62,25 @@ trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
-create_file "$HOME/.bash_profile"
+
+LAPTOPRC="$HOME/.laptoprc"
+
+create_file "$LAPTOPRC"
+
+
+brew_install_or_upgrade() {
+  if brew list | grep "^$1"; then
+    if brew outdated | grep "^$1 ("; then
+      fancy_echo "Upgrade $1 ..."
+      brew upgrade "$@"
+    else
+      fancy_echo "Already installed $1 ..."
+    fi
+  else
+    fancy_echo "Installing $1 ..."
+    brew install "$@"
+  fi
+}
 
 gem_install_or_update() {
   if gem list "$1" | grep "^$1 ("; then
@@ -80,40 +92,63 @@ gem_install_or_update() {
   fi
 }
 
-app_is_installed() {
-  local app_name
-  app_name=$(echo "$1" | cut -d'-' -f1)
-  find /Applications -iname "$app_name*" -maxdepth 1 | egrep '.*' > /dev/null
-}
-
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
     curl -fsS \
       'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 
     # shellcheck disable=SC2016
-    append_to_file "$HOME/.zshrc" 'export PATH="/usr/local/bin:$PATH"'
+    append_to_file "$LAPTOPRC" 'export PATH="/usr/local/bin:$PATH"'
 
 else
   fancy_echo "Homebrew already installed. Skipping ..."
 fi
 
 brew update
-brew tap 'homebrew/bundle'
+brew tap 'homebrew/services'
+brew tap 'caskroom/cask'
+brew tap 'caskroom/versions'
 
-curl_to_file "$HOME/Brewfile" \
-  "https://raw.githubusercontent.com/istrategylabs/laptop/master/Brewfile"
+# libs
+brew_install_or_upgrade 'libsass'
+brew_install_or_upgrade 'libxml2'
+brew_install_or_upgrade 'openssl'
+brew_install_or_upgrade 'sqlite'
+brew_install_or_upgrade 'pkg-config'
 
-brew bundle --file="$HOME/Brewfile"
+# services
+brew services stop --all
+brew_install_or_upgrade 'chromedriver'
+brew_install_or_upgrade 'elasticsearch'
+brew_install_or_upgrade 'mysql'
+brew_install_or_upgrade 'postgresql'
+brew_install_or_upgrade 'redis'
 
-rm "$HOME/Brewfile"
+# languages
+brew_install_or_upgrade 'node'
+brew_install_or_upgrade 'nvm'
+brew_install_or_upgrade 'python'
+brew_install_or_upgrade 'pipenv'
+brew_install_or_upgrade 'ruby'
+brew_install_or_upgrade 'php'
 
+brew_install_or_upgrade 'composer'
 
-#
-# PostgreSQL
-#
+# command line utilities
+brew_install_or_upgrade 'ack'
+brew_install_or_upgrade 'git'
+brew_install_or_upgrade 'heroku'
+brew_install_or_upgrade 'tree'
+brew_install_or_upgrade 'wget'
 
-initdb /usr/local/var/postgres
+# casks
+brew cask install 'firefox'
+brew cask install 'github-desktop'
+brew cask install 'google-chrome'
+brew cask install 'iterm2'
+brew cask install 'transmit'
+brew cask install 'tower'
+brew cask install 'visual-studio-code'
 
 
 #
@@ -121,64 +156,42 @@ initdb /usr/local/var/postgres
 #
 
 
-# Go
-if [ ! -d "$HOME/.gvm" ]; then
-  curl -fsS \
-    'https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer' | bash
-fi
-
-
-# Node
-curl -fsS \
-  'https://raw.githubusercontent.com/creationix/nvm/v0.30.1/install.sh' | bash
-
-
 # Python
-if ! pip3 list | ack "virtualenvwrapper" > /dev/null; then
-  fancy_echo 'Installing virtualenvwrapper...'
-  pip3 install virtualenvwrapper
-  append_to_file "$HOME/.zshrc" 'export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3'
-  append_to_file "$HOME/.zshrc" 'export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv'
-  append_to_file "$HOME/.zshrc" 'source /usr/local/bin/virtualenvwrapper.sh'
-fi
+curl -sf https://gist.githubusercontent.com/jcarbaugh/fd01d825437b735cb44dbac8a11aff1c/raw/2b540829c71c68166c9678cd2ef2d0484e142bde/repython.sh | sh
 
 
 # Ruby
 append_to_file "$HOME/.gemrc" 'gem: --no-document'
 fancy_echo 'Updating Rubygems...'
 gem update --system
-gem_install_or_update 'bundler'
-fancy_echo "Configuring Bundler ..."
-  number_of_cores=$(sysctl -n hw.ncpu)
-  bundle config --global jobs $((number_of_cores - 1))
+gem_install_or_update 'foreman'
+
+
+# PHP
+# pecl config-get ext_dir
+pecl install imagick
+pecl install redis
 
 
 #
-# configure Atom
+# configure VSCode
 #
 
-pip3 install flake8
-
-apm install editorconfig
-apm install linter
-apm install linter-eslint
-apm install linter-flake8
-apm install linter-jshint
-apm install script
-apm install set-syntax
-
-
-
-echo "process.env.PATH = ['/usr/local/bin/', process.env.PATH].join(':')" \
-    >> $HOME/.atom/init.coffee
-
+code --install-extension mikestead.dotenv               # DotENV
+code --install-extension batisteo.vscode-django         # Django
+code --install-extension EditorConfig.EditorConfig      # EditorConfig
+code --install-extension dbaeumer.vscode-eslint         # ESlint
+code --install-extension esbenp.prettier-vscode         # Prettier
+code --install-extension ms-python.python               # Python
+code --install-extension robertohuertasm.vscode-icons   # vscode-icons'
 
 #
 # copy default config files
 #
 
-curl_to_file "$HOME/.editorconfig" \
-  "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/editorconfig"
+# curl_to_file "$HOME/.editorconfig" \
+#   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/editorconfig"
 
-curl_to_file "$HOME/.vimrc" \
-  "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/vimrc"
+fancy_echo "Finished!"
+fancy_echo "Add the following line to the end of .bash_profile or .zshrc:"
+fancy_echo "source $LAPTOPRC"
