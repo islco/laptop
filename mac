@@ -118,7 +118,6 @@ brew_install_or_upgrade 'pkg-config'
 
 # services
 brew services stop --all
-brew_install_or_upgrade 'chromedriver'
 brew_install_or_upgrade 'elasticsearch'
 brew_install_or_upgrade 'mysql'
 brew_install_or_upgrade 'postgresql'
