@@ -1,8 +1,5 @@
 Laptop
 ======
-[![<ORG_NAME>](https://circleci.com/<VCS>/<ORG_NAME>/<PROJECT_NAME>.svg?style=svg)](<LINK>)
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs/tree/teesloane-patch-5.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs/tree/teesloane-patch-5)
-
 
 _Laptop_ is a script to set up an MacOS computer for web development.
 
@@ -13,7 +10,7 @@ based on what is already installed on the machine.
 Requirements
 ------------
 
-:warning: At this time, MacOS Big Sur is unsupported - proceed at your own risk!
+:warning: At this time, MacOS Big Sur is NOT supported - proceed at your own risk!
 
 We support:
 
@@ -64,8 +61,6 @@ What it sets up
 
 * [GitHub for Mac] for setting up your SSH keys automatically
 * [Homebrew] for managing operating system libraries
-* [Homebrew Cask] for quickly installing Mac apps from the command line
-* [Homebrew Services] so you can easily stop, start, and restart services
 * [hub] for interacting with the GitHub API
 * [Node.js] and [NPM] via [NVM] for running apps and installing JavaScript packages
 * [Python 3] via [Pyenv] for programming software and data analysis
@@ -81,6 +76,7 @@ What it sets up
 [NVM]: https://github.com/nvm-sh/nvm
 [Python 3]: https://www.python.org/
 [Pyenv]: https://github.com/pyenv/pyenv
+[Pipenv]: https://pipenv.pypa.io/en/latest/ 
 [Slack]: https://slack.com/
 [Zsh]: http://www.zsh.org/
 

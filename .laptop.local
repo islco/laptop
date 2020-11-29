@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# brew_cask_install 'visual-studio-code'
-# brew_cask_install 'firefox'
-# brew_cask_install 'iterm2'
+brew_cask_install 'atom'
 
 # brew_install_or_upgrade 'go' && append_to_file "$HOME/.zshrc" 'export PATH="$PATH:/usr/local/opt/go/libexec/bin"'

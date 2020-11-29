@@ -146,6 +146,11 @@ cask_install_or_skip 'Docker' 'docker'
 ## Font for ZSH
 brew cask install 'font-meslo-lg-nerd-font'
 
+if [ -f $HOME/.laptop.local ]; then
+  $HOME/.laptop.local | sh
+fi
+
+
 #
 # languages
 #
