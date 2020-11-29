@@ -1,5 +1,9 @@
 #!/bin/sh
 
-brew_cask_install 'atom'
+# brew cask install 'sublime-text'
+# brew cask install 'atom'
+# brew cask install 'postman'
+# brew cask install 'sketch'
+brew cask install 'pycharm-ce'
 
 # brew_install_or_upgrade 'go' && append_to_file "$HOME/.zshrc" 'export PATH="$PATH:/usr/local/opt/go/libexec/bin"'

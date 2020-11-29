@@ -142,12 +142,17 @@ cask_install_or_skip 'Slack' 'slack'
 
 ## Utilities
 cask_install_or_skip 'Docker' 'docker'
+brew install 'docker-compose'
+brew cask install aws-vault
+
+## Security
+cask_install_or_skip '1 Password' '1password'
 
 ## Font for ZSH
 brew cask install 'font-meslo-lg-nerd-font'
 
 if [ -f $HOME/.laptop.local ]; then
-  $HOME/.laptop.local | sh
+  /bin/bash $HOME/.laptop.local
 fi
 
 
@@ -163,6 +168,9 @@ fi
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
 append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+
+. $HOME/.nvm/nvm.sh
+nvm install 10.15.3
 
 #
 # configure VSCode
@@ -191,5 +199,4 @@ fancy_echo "Finished! Your shell will be automatically reloaded."
 
 exec /bin/zsh
 
-#TODO: Postinstall
 # TODO: awscli
