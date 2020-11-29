@@ -146,7 +146,7 @@ brew install 'docker-compose'
 brew cask install aws-vault
 
 ## Security
-cask_install_or_skip '1 Password' '1password'
+cask_install_or_skip '1Password 7' '1password'
 
 ## Font for ZSH
 brew cask install 'font-meslo-lg-nerd-font'
