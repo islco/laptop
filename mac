@@ -1,11 +1,11 @@
 #!/bin/sh
 
-# Welcome to the ISL laptop script!
+# Welcome to the Mariana Tek laptop script!
 # Be prepared to turn your laptop (or desktop)
 # into a fairly decent development machine.
 
 #
-# install OS X developer tools
+# Install MacOS developer tools
 #
 
 xcode-select -p > /dev/null 2>&1
@@ -14,10 +14,6 @@ if [ $? -ne 0 ]
 then
     xcode-select --install
 fi
-
-# fix for pyenv https://github.com/pyenv/pyenv/issues/1219
-sudo installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
-
 
 
 #
@@ -29,6 +25,17 @@ fancy_echo() {
 
   # shellcheck disable=SC2059
   printf "\n$fmt\n" "$@"
+}
+
+cask_install_or_skip() {
+  local app_name="$1"
+  local cask_name="$2"
+
+  if open -Ra "$app_name"; then
+    fancy_echo "$app_name is already installed - skipping"
+  else
+    brew cask install $cask_name
+  fi
 }
 
 append_to_file() {
@@ -45,6 +52,8 @@ create_file() {
 
   if [ ! -f "$file" ]; then
     touch "$file"
+  else
+    rm "$file"; touch "$file"
   fi
 }
 
@@ -54,6 +63,20 @@ curl_to_file() {
 
   if [ ! -f "$file" ]; then
     curl "$url" > "$file"
+  fi
+}
+
+brew_install_or_upgrade() {
+  if brew list --formula | grep "^$1"; then
+    if brew outdated | grep "^$1 ("; then
+      fancy_echo "Upgrade $1 ..."
+      brew upgrade "$@"
+    else
+      fancy_echo "Already installed $1 ..."
+    fi
+  else
+    fancy_echo "Installing $1 ..."
+    brew install "$@"
   fi
 }
 
@@ -67,110 +90,74 @@ LAPTOPRC="$HOME/.laptoprc"
 
 create_file "$LAPTOPRC"
 
-
-brew_install_or_upgrade() {
-  if brew list | grep "^$1"; then
-    if brew outdated | grep "^$1 ("; then
-      fancy_echo "Upgrade $1 ..."
-      brew upgrade "$@"
-    else
-      fancy_echo "Already installed $1 ..."
-    fi
-  else
-    fancy_echo "Installing $1 ..."
-    brew install "$@"
-  fi
-}
-
-gem_install_or_update() {
-  if gem list "$1" | grep "^$1 ("; then
-    fancy_echo "Updating %s ..." "$1"
-    gem update "$@"
-  else
-    fancy_echo "Installing %s ..." "$1"
-    gem install "$@"
-  fi
-}
-
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
-    curl -fsS \
-      'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+    curl -fsSL \
+      'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | sh
 
     # shellcheck disable=SC2016
     append_to_file "$LAPTOPRC" 'export PATH="/usr/local/bin:$PATH"'
+    append_to_file "$LAPTOPRC" 'export PATH="/usr/local/sbin:$PATH"'
 
 else
   fancy_echo "Homebrew already installed. Skipping ..."
 fi
 
 brew update
-brew tap 'homebrew/services'
-brew tap 'caskroom/cask'
-brew tap 'caskroom/versions'
+brew tap 'heroku/brew'
+brew tap 'homebrew/cask-fonts'
 
-# libs
-brew_install_or_upgrade 'libsass'
-brew_install_or_upgrade 'libxml2'
-brew_install_or_upgrade 'openssl'
-brew_install_or_upgrade 'sqlite'
-brew_install_or_upgrade 'pkg-config'
 
 # services
 brew services stop --all
-brew_install_or_upgrade 'elasticsearch'
-brew_install_or_upgrade 'mysql'
-brew_install_or_upgrade 'postgresql'
-brew_install_or_upgrade 'redis'
-
-# languages
-brew_install_or_upgrade 'node'
-brew_install_or_upgrade 'nvm'
-brew_install_or_upgrade 'python'
-brew_install_or_upgrade 'pipenv'
-brew_install_or_upgrade 'ruby'
-brew_install_or_upgrade 'php'
-
-brew_install_or_upgrade 'composer'
+brew_install_or_upgrade 'postgresql@11'
+append_to_file "$LAPTOPRC" 'export PATH="/usr/local/opt/postgresql@11/bin:$PATH"'
+brew_install_or_upgrade 'stripe/stripe-cli/stripe'
 
 # command line utilities
-brew_install_or_upgrade 'ack'
 brew_install_or_upgrade 'git'
 brew_install_or_upgrade 'heroku'
 brew_install_or_upgrade 'tree'
 brew_install_or_upgrade 'wget'
 
-# casks
-brew cask install 'firefox'
-brew cask install 'github-desktop'
-brew cask install 'google-chrome'
-brew cask install 'iterm2'
-brew cask install 'transmit'
-brew cask install 'tower'
-brew cask install 'visual-studio-code'
+# zsh prompt
+brew_install_or_upgrade 'starship'
 
+# casks
+## Browsers
+cask_install_or_skip 'Firefox' 'firefox'
+cask_install_or_skip 'Google Chrome' 'google-chrome'
+
+## Git
+cask_install_or_skip 'Github Desktop' 'github'
+
+## Terminal
+cask_install_or_skip 'iTerm' 'iterm2'
+
+## Editors
+cask_install_or_skip 'Visual Studio Code' 'visual-studio-code'
+
+## Communication
+cask_install_or_skip 'Slack' 'slack'
+
+## Utilities
+cask_install_or_skip 'Docker' 'docker'
+
+## Font for ZSH
+brew cask install 'font-meslo-lg-nerd-font'
 
 #
 # languages
 #
 
-
 # Python
-curl -sf https://gist.githubusercontent.com/jcarbaugh/fd01d825437b735cb44dbac8a11aff1c/raw/2b540829c71c68166c9678cd2ef2d0484e142bde/repython.sh | sh
+# curl -fsSL https://raw.githubusercontent.com/jcarbaugh/repython/master/repython.sh | sh
+# pyenv install 3.6.8
 
-
-# Ruby
-append_to_file "$HOME/.gemrc" 'gem: --no-document'
-fancy_echo 'Updating Rubygems...'
-gem update --system
-gem_install_or_update 'foreman'
-
-
-# PHP
-# pecl config-get ext_dir
-pecl install imagick
-pecl install redis
-
+# JavaScript
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
+append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
 
 #
 # configure VSCode
@@ -182,15 +169,22 @@ code --install-extension EditorConfig.EditorConfig      # EditorConfig
 code --install-extension dbaeumer.vscode-eslint         # ESlint
 code --install-extension esbenp.prettier-vscode         # Prettier
 code --install-extension ms-python.python               # Python
-code --install-extension robertohuertasm.vscode-icons   # vscode-icons'
+code --install-extension vscode-icons-team.vscode-icons # vscode-icons'
 
 #
 # copy default config files
 #
 
-# curl_to_file "$HOME/.editorconfig" \
-#   "https://raw.githubusercontent.com/istrategylabs/laptop/master/config/editorconfig"
+curl_to_file "$HOME/.editorconfig" \
+  "https://raw.githubusercontent.com/Mariana-Tek/laptop/master/config/editorconfig"
 
-fancy_echo "Finished!"
-fancy_echo "Add the following line to the end of .bash_profile or .zshrc:"
-fancy_echo "source $LAPTOPRC"
+append_to_file "$HOME/.zshrc" 'source $HOME/.laptoprc'
+append_to_file "$HOME/.zshrc" 'eval "$(starship init zsh)"'
+mkdir -p ~/.config && touch ~/.config/starship.toml
+
+fancy_echo "Finished! Your shell will be automatically reloaded."
+
+exec /bin/zsh
+
+#TODO: Postinstall
+# TODO: awscli
