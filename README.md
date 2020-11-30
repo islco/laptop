@@ -33,19 +33,18 @@ script, respectively:
 
 ```sh
 curl --remote-name https://raw.githubusercontent.com/Mariana-Tek/laptop/master/mac
+```
+
+```sh
 bash mac 2>&1 | tee ~/laptop.log
 ```
+
 The [script](https://github.com/Mariana-Tek/laptop/blob/master/mac) itself is
 available in this repo for you to review if you want to see what it does
 and how it works.
 
 Note that the script will ask you to enter your MacOS password at various
 points. This is the same password that you use to log in to your Mac.
-If you don't already have it installed, GitHub for Mac will launch
-automatically at the end of the script so you can set up everything you'll
-need to push code to GitHub.
-
-Once the script is done, make sure to quit and relaunch Terminal.
 
 Debugging
 ---------
@@ -59,28 +58,86 @@ whole log file as an attachment.
 What it sets up
 ---------------
 
-* [GitHub for Mac] for setting up your SSH keys automatically
-* [Homebrew] for managing operating system libraries
-* [hub] for interacting with the GitHub API
-* [Node.js] and [NPM] via [NVM] for running apps and installing JavaScript packages
-* [Python 3] via [Pyenv] for programming software and data analysis
-* [Slack] for communicating with your team
-* [Pipenv] for creating isolated Python environments
-* [Zsh] as your shell
+*System Utilities*
 
-[GitHub for Mac]: https://mac.github.com/
+* [Homebrew] for managing operating system libraries 🍻
+* [wget] for fetching content HTTP resources from the command line 📨
+* [aws-vault] for simply interacting with the AWS CLI 🌐
+* [Stripe CLI] for interacting with our primary payments provider 💸
+
+*Terminal*
+
+* [iTerm2] for a great terminal 💻
+* [Starship] for an easy to configure, highly informative command prompt 🚀
+
+*Fonts*
+
+* [Nerd Fonts] for all the emojis ✨
+
+*Datastores*
+
+* [PostgreSQL] for your DB utilities 🐘
+
+*Git*
+
+* [Git] for pushing and pulling code to our repositories ↕️
+* [GitHub Desktop] for setting up your SSH keys automatically and committing code with a GUI ↕️
+
+*Browsers*
+
+* [Google Chrome] for an alternative to Safari 🕵️
+* [Firefox] for an alternative to Safari 🦊
+
+*Editors*
+
+* [PyCharm CE] for a powerful but lightweight IDE 🐍
+* [Visual Studio Code] for a powerful but lightweight editor ☕ 📜
+
+*Communication*
+
+* [Slack] for communicating with your team 💬
+
+*Languages*
+
+* [Python 3] via [Pyenv] for programming software and data analysis 🐍
+* [Pipenv] for creating isolated Python environments 🐍
+* [Node.js] and [NPM] via [NVM] for running apps and installing JavaScript packages ☕ 📜
+
+*Security*
+
+* [1 Password] for setting and getting secret credentials 🔐
+
+*DevOps*
+
+* [Heroku] for interacting with our favorite pre-production deployment environment 💜
+* [Docker for Mac] for running containers 🐋
+
 [Homebrew]: http://brew.sh/
-[hub]: https://github.com/github/hub
-[Node.js]: http://nodejs.org/
-[NPM]: https://www.npmjs.org/
-[NVM]: https://github.com/nvm-sh/nvm
+[wget]: https://www.gnu.org/software/wget/ 
+[aws-vault]: https://github.com/99designs/aws-vault 
+[Stripe CLI]: https://stripe.com/docs/stripe-cli
+[iTerm2]: https://iterm2.com/
+[Starship]: https://starship.rs/
+[Nerd Fonts]: https://www.nerdfonts.com/
+[PostgreSQL]: https://www.postgresql.org/
+[Git]: https://git-scm.com/
+[Github Desktop]: https://desktop.github.com/
+[Google Chrome]: https://www.google.com/chrome/
+[Firefox]: https://www.mozilla.org/en-US/firefox/new/
+[PyCharm CE]: https://www.jetbrains.com/pycharm/
+[Visual Studio Code]: https://code.visualstudio.com/
+[Slack]: https://slack.com/
 [Python 3]: https://www.python.org/
 [Pyenv]: https://github.com/pyenv/pyenv
 [Pipenv]: https://pipenv.pypa.io/en/latest/ 
-[Slack]: https://slack.com/
-[Zsh]: http://www.zsh.org/
+[Node.js]: http://nodejs.org/
+[NPM]: https://www.npmjs.org/
+[NVM]: https://github.com/nvm-sh/nvm
+[1 Password]: https://1password.com/
+[Heroku]: https://www.heroku.com/
+[Docker for Mac]: https://www.docker.com/products/docker-desktop
 
-It should take less than 15 minutes to install (depends on your machine and
+It should take less than 15-20 minutes to install (depends on your machine and
 internet connection).
 
 Customize in `~/.laptop.local`
@@ -91,22 +148,25 @@ Put your customizations there. This repo already contains a `.laptop.local`
 you can use to get started. It lets you install the following tools
 (commented out by default):
 
-* [VSCode] - Microsoft's text editor
-* [Firefox] for testing your website on a browser other than Chrome
-* [iTerm2] - an awesome replacement for the OS X Terminal
+* [Sublime Text] for a super fast, lightweight editor
+* [Atom] for another flavor of lightweight editor
+* [Postman] for testing APIs in a great GUI interface
+* [Sketch] for getting your designs looking right
 
-[VSCode]: https://code.visualstudio.com/
-[Firefox]: https://www.mozilla.org/en-US/firefox/new/
-[iTerm2]: http://iterm2.com/
+[Sublime Text]: https://www.sublimetext.com/
+[Atom]: https://atom.io/
+[Postman]: https://www.postman.com/
+[Sketch]: https://www.sketch.com/
 
 For example:
 
 ```sh
 #!/bin/sh
 
-# brew_cask_install 'visual-studio-code'
-# brew_cask_install 'firefox'
-brew_cask_install 'iterm2'
+# brew cask install 'sublime-text'
+# brew cask install 'atom'
+# brew cask install 'postman'
+brew cask install 'sketch'
 
 ```
 

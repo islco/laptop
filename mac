@@ -117,7 +117,6 @@ brew_install_or_upgrade 'stripe/stripe-cli/stripe'
 # command line utilities
 brew_install_or_upgrade 'git'
 brew_install_or_upgrade 'heroku'
-brew_install_or_upgrade 'tree'
 brew_install_or_upgrade 'wget'
 
 # zsh prompt
@@ -136,6 +135,7 @@ cask_install_or_skip 'iTerm' 'iterm2'
 
 ## Editors
 cask_install_or_skip 'Visual Studio Code' 'visual-studio-code'
+cask_install_or_skip 'PyCharm CE' 'pycharm-ce'
 
 ## Communication
 cask_install_or_skip 'Slack' 'slack'
@@ -199,5 +199,3 @@ mkdir -p ~/.config && touch ~/.config/starship.toml
 fancy_echo "Finished! Your shell will be automatically reloaded."
 
 exec /bin/zsh
-
-# TODO: awscli
