@@ -46,6 +46,29 @@ and how it works.
 NOTE: :warning: The script will ask you to enter your MacOS password at various
 points. This is the same password that you use to log in to your Mac.
 
+Uninstall
+---------
+
+To revert the state of your local development environment, removing the applications
+and configuration installed by _Laptop_, we have provided a rudimentary
+script to uninstall _Laptop_.
+
+It presumes that you may have installed additional packages via Homebrew and will 
+target the applications installed by _Laptop_ only. Likewise, it presumes 
+that you may wish to retian Homebrew itself.
+
+In your Terminal window (NOTE: Do not select iTerm for this task, as it will be removed!),
+ copy and paste each of these two commands one at a time, then press `return` after 
+ each one to download and execute the script, respectively:
+
+```sh
+curl --remote-name https://raw.githubusercontent.com/Mariana-Tek/laptop/master/mac_uninstall
+```
+
+```sh
+bash mac_uninstall 2>&1 | tee ~/laptop.log
+```
+
 Debugging
 ---------
 

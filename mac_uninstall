@@ -1,0 +1,208 @@
+#!/bin/sh
+
+# Welcome to the Mariana Tek laptop uninstall script!
+# Be prepared to revert your laptop (or desktop)
+# to its original state before having used the
+# laptop install script.
+
+#
+# Utilities
+#
+
+append_to_file() {
+  local file="$1"
+  local text="$2"
+
+  if ! grep -qs "^$text$" "$file"; then
+    printf "\n%s\n" "$text" >> "$file"
+  fi
+}
+
+brew_uninstall() {
+  if brew list --formula | grep "^$1"; then
+    brew uninstall "$@"
+  else
+    fancy_echo "$1 not found..."
+  fi
+}
+
+create_file() {
+  local file="$1"
+
+  if [ ! -f "$file" ]; then
+    touch "$file"
+  else
+    rm "$file"; touch "$file"
+  fi
+}
+
+curl_to_file() {
+  local file="$1"
+  local url="$2"
+
+  if [ ! -f "$file" ]; then
+    curl "$url" > "$file"
+  fi
+}
+
+exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+fancy_echo() {
+  local fmt="$1"; shift
+
+  # shellcheck disable=SC2059
+  printf "\n$fmt\n" "$@"
+}
+
+# ============================================================================
+# Begin script...
+# ============================================================================
+
+# shellcheck disable=SC2154
+trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
+
+set -e
+
+LAPTOPRC="$HOME/.laptoprc"
+ORIGINAL_ZSHRC="$HOME/.zshrc.bak"
+ZSHRC="$HOME/.zshrc"
+OS_VERSION=${1:-$(sw_vers -productVersion)}
+
+#
+# Cleanup existing + problematic entries (non-brew)
+#
+
+
+#
+# Revert laptop script ZSH settings
+#
+
+if [ -f "$ORIGINAL_ZSHRC" ]; then
+  rm "$ZSHRC"; cp "$ORIGINAL_ZSHRC" "$ZSHRC"
+fi
+
+#
+# Remove laptop config file
+#
+
+if [ -f "$LAPTOPRC" ]; then
+  rm "$LAPTOPRC"
+fi
+
+#
+# Uninstall Homebrew formulae
+#
+
+## services
+brew services stop --all
+brew_uninstall 'postgresql@11'
+brew_uninstall 'stripe/stripe-cli/stripe'
+
+## command line utilities
+brew_uninstall 'git'
+brew_uninstall 'heroku'
+brew_uninstall 'wget'
+
+## zsh prompt
+brew_uninstall 'starship'
+
+STARSHIP_CONFIG="$HOME/.config/starship.toml"
+if [ -f "$STARSHIP_CONFIG" ]; then
+  rm "$STARSHIP_CONFIG"
+fi
+
+#
+# Install Homebrew casks
+#
+
+## Browsers
+(brew cask uninstall --force 'firefox' || :)
+(brew cask uninstall --force 'google-chrome' || :)
+
+## Git
+(brew cask uninstall --force 'github' || :)
+
+## Terminal
+(brew cask uninstall --force 'iterm2' || :)
+
+## Editors
+(brew cask uninstall --force 'pycharm-ce' || :)
+(brew cask uninstall --force 'visual-studio-code' || :)
+
+## Communication
+(brew cask uninstall --force 'slack' || :)
+
+## Utilities
+(brew cask uninstall --force 'docker' || :)
+brew_uninstall --force 'docker-compose'
+
+## AWS
+(brew cask uninstall --force 'aws-vault' || :)
+
+## Security
+(brew cask uninstall --force '1password' || :)
+
+## Font for ZSH
+(brew cask uninstall --force 'font-meslo-lg-nerd-font' || :)
+
+#
+# Remove .laptop.local overrides
+#
+
+if [ -f $HOME/.laptop.local ]; then
+  rm $HOME/.laptop.local
+fi
+
+#
+# Install non-Homebrew packages/libraries
+#
+
+## Python
+
+if [ -f /usr/local/bin/pyenv ]; then
+  for v in `pyenv versions --bare`; do
+    pyenv uninstall -f $v
+  done
+fi
+
+brew uninstall --force pipx
+brew uninstall --force pipenv
+brew uninstall --force pyenv
+brew uninstall --force --ignore-dependencies python@3.9
+brew uninstall --force --ignore-dependencies python@3.8
+brew uninstall --force --ignore-dependencies python
+brew uninstall --force --ignore-dependencies python2
+brew uninstall --force --ignore-dependencies python3
+
+bins=('easy_install' 'pew' 'pip' 'pip2' 'pip3' 'pipenv' 'pipx'
+      'python' 'python-build' 'python-config' 'python2*' 'python3*'
+      'virtualenv' 'virtualenv-clone' 'virtualenvwrapper.sh')
+for b in "${bins[@]}"; do
+  rm -f /usr/local/bin/$b
+  rm -f /usr/local/opt/python/libexec/bin
+done
+
+rm -rf /usr/local/lib/python2*
+rm -rf /usr/local/lib/python3*
+rm -rf /usr/local/opt/python*
+
+test -d $HOME/.virtualenvs && rm -rf $HOME/.virtualenvs
+test -d $HOME/.local && rm -rf $HOME/.local && mkdir $HOME/.local
+
+# NVM
+# https://github.com/nvm-sh/nvm/issues/298
+rm -rf "$HOME/.nvm"
+
+#
+# Remove editorconfig
+#
+
+if [ -f "$HOME/.editorconfig" ]; then
+  rm "$HOME/.editorconfig"
+fi
+
+fancy_echo "Finished! Your shell will be automatically reloaded."
+
+exec /bin/zsh

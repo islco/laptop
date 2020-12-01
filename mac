@@ -5,30 +5,30 @@
 # into a fairly decent development machine.
 
 #
-# Install MacOS developer tools
+# Utilities
 #
 
-xcode-select -p > /dev/null 2>&1
+append_to_file() {
+  local file="$1"
+  local text="$2"
 
-if [ $? -ne 0 ]
-then
-    xcode-select --install
-fi
-
-
-#
-# utilities
-#
-
-exists() {
-  command -v "$1" >/dev/null 2>&1
+  if ! grep -qs "^$text$" "$file"; then
+    printf "\n%s\n" "$text" >> "$file"
+  fi
 }
 
-fancy_echo() {
-  local fmt="$1"; shift
-
-  # shellcheck disable=SC2059
-  printf "\n$fmt\n" "$@"
+brew_install_or_upgrade() {
+  if brew list --formula | grep "^$1"; then
+    if brew outdated | grep "^$1 ("; then
+      fancy_echo "Upgrade $1 ..."
+      brew upgrade "$@"
+    else
+      fancy_echo "Already installed $1 ..."
+    fi
+  else
+    fancy_echo "Installing $1 ..."
+    brew install "$@"
+  fi
 }
 
 cask_install_or_skip() {
@@ -39,15 +39,6 @@ cask_install_or_skip() {
     fancy_echo "$app_name is already installed - skipping"
   else
     brew cask install $cask_name
-  fi
-}
-
-append_to_file() {
-  local file="$1"
-  local text="$2"
-
-  if ! grep -qs "^$text$" "$file"; then
-    printf "\n%s\n" "$text" >> "$file"
   fi
 }
 
@@ -70,67 +61,116 @@ curl_to_file() {
   fi
 }
 
-brew_install_or_upgrade() {
-  if brew list --formula | grep "^$1"; then
-    if brew outdated | grep "^$1 ("; then
-      fancy_echo "Upgrade $1 ..."
-      brew upgrade "$@"
-    else
-      fancy_echo "Already installed $1 ..."
-    fi
-  else
-    fancy_echo "Installing $1 ..."
-    brew install "$@"
-  fi
+exists() {
+  command -v "$1" >/dev/null 2>&1
 }
+
+fancy_echo() {
+  local fmt="$1"; shift
+
+  # shellcheck disable=SC2059
+  printf "\n$fmt\n" "$@"
+}
+
+# ============================================================================
+# Begin script...
+# ============================================================================
 
 # shellcheck disable=SC2154
 trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
-bins=('aws-vault')
-for b in "${bins[@]}"; do
-  rm -f /usr/local/bin/$b
-done
-
 LAPTOPRC="$HOME/.laptoprc"
+ZSHRC="$HOME/.zshrc"
+OS_VERSION=${1:-$(sw_vers -productVersion)}
+
+#
+# Install MacOS developer tools
+#
+
+xcode-select -p > /dev/null 2>&1
+
+if [ $? -ne 0 ]
+then
+    xcode-select --install
+fi
+
+#
+# Cleanup existing + problematic entries (non-brew)
+#
+
+# NVM
+# https://github.com/nvm-sh/nvm/issues/298
+rm -rf "$HOME/.nvm"
+
+#
+# Backup existing ZSH settings
+#
+
+if [ -f "$ZSHRC" ]; then
+  cp "$ZSHRC" "$HOME/.zshrc.bak"; create_file "$ZSHRC"
+else
+  create_file "$ZSHRC"
+fi
+
+#
+# Create laptop config file
+#
 
 create_file "$LAPTOPRC"
+
+
+#
+# Install Homebrew + set PATH
+#
 
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
     curl -fsSL \
       'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | sh
 
-    # shellcheck disable=SC2016
-    append_to_file "$LAPTOPRC" 'export PATH="/usr/local/bin:$PATH"'
-    append_to_file "$LAPTOPRC" 'export PATH="/usr/local/sbin:$PATH"'
 
 else
   fancy_echo "Homebrew already installed. Skipping ..."
 fi
 
+# shellcheck disable=SC2016
+append_to_file "$LAPTOPRC" 'export PATH="/usr/local/bin:$PATH"'
+append_to_file "$LAPTOPRC" 'export PATH="/usr/local/sbin:$PATH"'
+
+#
+# Update Homebrew
+#
+
 brew update
 brew tap 'heroku/brew'
 brew tap 'homebrew/cask-fonts'
 
+#
+# Install Homebrew formulae
+#
 
-# services
+## services
 brew services stop --all
 brew_install_or_upgrade 'postgresql@11'
 append_to_file "$LAPTOPRC" 'export PATH="/usr/local/opt/postgresql@11/bin:$PATH"'
 brew_install_or_upgrade 'stripe/stripe-cli/stripe'
 
-# command line utilities
+## command line utilities
 brew_install_or_upgrade 'git'
 brew_install_or_upgrade 'heroku'
 brew_install_or_upgrade 'wget'
 
-# zsh prompt
+## zsh prompt
 brew_install_or_upgrade 'starship'
+append_to_file "$HOME/.zshrc" 'eval "$(starship init zsh)"'
+mkdir -p ~/.config && touch ~/.config/starship.toml
 
-# casks
+#
+# Install Homebrew casks
+#
+
 ## Browsers
 cask_install_or_skip 'Firefox' 'firefox'
 cask_install_or_skip 'Google Chrome' 'google-chrome'
@@ -142,8 +182,16 @@ cask_install_or_skip 'Github Desktop' 'github'
 cask_install_or_skip 'iTerm' 'iterm2'
 
 ## Editors
-cask_install_or_skip 'Visual Studio Code' 'visual-studio-code'
 cask_install_or_skip 'PyCharm CE' 'pycharm-ce'
+cask_install_or_skip 'Visual Studio Code' 'visual-studio-code'
+### configure VSCode
+code --install-extension mikestead.dotenv               # DotENV
+code --install-extension batisteo.vscode-django         # Django
+code --install-extension EditorConfig.EditorConfig      # EditorConfig
+code --install-extension dbaeumer.vscode-eslint         # ESlint
+code --install-extension esbenp.prettier-vscode         # Prettier
+code --install-extension ms-python.python               # Python
+code --install-extension vscode-icons-team.vscode-icons # vscode-icons'
 
 ## Communication
 cask_install_or_skip 'Slack' 'slack'
@@ -152,13 +200,12 @@ cask_install_or_skip 'Slack' 'slack'
 cask_install_or_skip 'Docker' 'docker'
 brew install 'docker-compose'
 
-# AWS
-
-if exists aws-vault; then
-    brew cask uninstall aws-vault; brew cask install aws-vault
-else
-    brew reinstall aws-vault
-fi
+## AWS
+# if exists aws-vault; then
+#     brew cask uninstall aws-vault; brew cask install aws-vault
+# else
+#     brew reinstall aws-vault
+# fi
 
 ## Security
 cask_install_or_skip '1Password 7' '1password'
@@ -170,18 +217,20 @@ else
     brew cask install 'font-meslo-lg-nerd-font'
 fi
 
+#
+# Load Homebrew .laptop.local overrides
+#
+
 if [ -f $HOME/.laptop.local ]; then
   /bin/bash $HOME/.laptop.local
 fi
 
-
 #
-# languages
+# Install non-Homebrew packages/libraries
 #
 
-# Python
-os_ver=${1:-$(sw_vers -productVersion)}
-if [[ "$os_ver" == 11.0.* ]]; then
+## Python
+if [[ "$OS_VERSION" == 11.0.* ]]; then
     echo "Skipping - please review MacOS Big Sur instructions in Laptop README.md"
 else
    curl -fsSL https://raw.githubusercontent.com/jcarbaugh/repython/master/repython.sh | sh
@@ -189,7 +238,7 @@ else
    pyenv install 3.6.8
 fi
 
-# JavaScript
+## Node.js
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
 append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
@@ -198,27 +247,17 @@ append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && pr
 nvm install 10.15.3
 
 #
-# configure VSCode
-#
-
-code --install-extension mikestead.dotenv               # DotENV
-code --install-extension batisteo.vscode-django         # Django
-code --install-extension EditorConfig.EditorConfig      # EditorConfig
-code --install-extension dbaeumer.vscode-eslint         # ESlint
-code --install-extension esbenp.prettier-vscode         # Prettier
-code --install-extension ms-python.python               # Python
-code --install-extension vscode-icons-team.vscode-icons # vscode-icons'
-
-#
-# copy default config files
+# Copy default configs + postinstall files
 #
 
 curl_to_file "$HOME/.editorconfig" \
   "https://raw.githubusercontent.com/Mariana-Tek/laptop/master/config/editorconfig"
 
-append_to_file "$HOME/.zshrc" 'source $HOME/.laptoprc'
-append_to_file "$HOME/.zshrc" 'eval "$(starship init zsh)"'
-mkdir -p ~/.config && touch ~/.config/starship.toml
+#
+# Load .laptoprc as last entry in ZSHRC
+#
+
+append_to_file "$ZSHRC" 'source $HOME/.laptoprc'
 
 fancy_echo "Finished! Your shell will be automatically reloaded."
 
