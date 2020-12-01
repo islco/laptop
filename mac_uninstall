@@ -9,46 +9,6 @@
 # Utilities
 #
 
-append_to_file() {
-  local file="$1"
-  local text="$2"
-
-  if ! grep -qs "^$text$" "$file"; then
-    printf "\n%s\n" "$text" >> "$file"
-  fi
-}
-
-brew_uninstall() {
-  if brew list --formula | grep "^$1"; then
-    brew uninstall "$@"
-  else
-    fancy_echo "$1 not found..."
-  fi
-}
-
-create_file() {
-  local file="$1"
-
-  if [ ! -f "$file" ]; then
-    touch "$file"
-  else
-    rm "$file"; touch "$file"
-  fi
-}
-
-curl_to_file() {
-  local file="$1"
-  local url="$2"
-
-  if [ ! -f "$file" ]; then
-    curl "$url" > "$file"
-  fi
-}
-
-exists() {
-  command -v "$1" >/dev/null 2>&1
-}
-
 fancy_echo() {
   local fmt="$1"; shift
 
@@ -97,16 +57,16 @@ fi
 
 ## services
 brew services stop --all
-(brew uninstall 'postgresql@11' || :)
-(brew uninstall 'stripe/stripe-cli/stripe' || :)
+(brew uninstall --force 'postgresql@11' || :)
+(brew uninstall --force 'stripe/stripe-cli/stripe' || :)
 
 ## command line utilities
-(brew uninstall 'git' || :)
-(brew uninstall 'heroku' || :)
-(brew uninstall 'wget' || :)
+(brew uninstall --force 'git' || :)
+(brew uninstall --force 'heroku' || :)
+(brew uninstall --force 'wget' || :)
 
 ## zsh prompt
-(brew uninstall 'starship' || :)
+(brew uninstall --force 'starship' || :)
 
 STARSHIP_CONFIG="$HOME/.config/starship.toml"
 if [ -f "$STARSHIP_CONFIG" ]; then
@@ -136,7 +96,7 @@ fi
 
 ## Utilities
 (brew cask uninstall --force 'docker' || :)
-brew_uninstall --force 'docker-compose'
+(brew uninstall --force 'docker-compose' || :)
 
 ## AWS
 (brew cask uninstall --force 'aws-vault' || :)
