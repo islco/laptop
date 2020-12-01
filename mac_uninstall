@@ -40,8 +40,9 @@ OS_VERSION=${1:-$(sw_vers -productVersion)}
 #
 
 if [ -f "$ORIGINAL_ZSHRC" ]; then
-  rm "$ZSHRC"; cp "$ORIGINAL_ZSHRC" "$ZSHRC"
+  rm "$ZSHRC"; cp "$ORIGINAL_ZSHRC" "$ZSHRC" && rm "$ORIGINAL_ZSHRC"
 fi
+
 
 #
 # Remove laptop config file
