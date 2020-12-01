@@ -201,11 +201,7 @@ cask_install_or_skip 'Docker' 'docker'
 brew install 'docker-compose'
 
 ## AWS
-# if exists aws-vault; then
-#     brew cask uninstall aws-vault; brew cask install aws-vault
-# else
-#     brew reinstall aws-vault
-# fi
+brew cask install 'aws-vault'
 
 ## Security
 cask_install_or_skip '1Password 7' '1password'

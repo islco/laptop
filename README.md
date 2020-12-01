@@ -69,6 +69,13 @@ curl --remote-name https://raw.githubusercontent.com/Mariana-Tek/laptop/master/m
 bash mac_uninstall 2>&1 | tee ~/laptop.log
 ```
 
+The [script](https://github.com/Mariana-Tek/laptop/blob/master/mac_uninstall) itself is
+available in this repo for you to review if you want to see what it does
+and how it works.
+
+NOTE: :warning: The script will ask you to enter your MacOS password at various
+points. This is the same password that you use to log in to your Mac.
+
 Debugging
 ---------
 

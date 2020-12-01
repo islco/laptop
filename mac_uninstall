@@ -97,16 +97,16 @@ fi
 
 ## services
 brew services stop --all
-brew_uninstall 'postgresql@11'
-brew_uninstall 'stripe/stripe-cli/stripe'
+(brew uninstall 'postgresql@11' || :)
+(brew uninstall 'stripe/stripe-cli/stripe' || :)
 
 ## command line utilities
-brew_uninstall 'git'
-brew_uninstall 'heroku'
-brew_uninstall 'wget'
+(brew uninstall 'git' || :)
+(brew uninstall 'heroku' || :)
+(brew uninstall 'wget' || :)
 
 ## zsh prompt
-brew_uninstall 'starship'
+(brew uninstall 'starship' || :)
 
 STARSHIP_CONFIG="$HOME/.config/starship.toml"
 if [ -f "$STARSHIP_CONFIG" ]; then
