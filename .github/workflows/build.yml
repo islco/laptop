@@ -1,0 +1,13 @@
+name: laptop build
+on: [push]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Homebrew
+        run: CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+      - name: Run laptop script
+        run: ./mac
