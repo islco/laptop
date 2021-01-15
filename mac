@@ -227,7 +227,7 @@ fi
 #
 
 ## Python
-if [[ "$OS_VERSION" == 11.0.* ]]; then
+if [[ "$OS_VERSION" > 11.0.* ]]; then
     echo "Skipping - please review MacOS Big Sur instructions in Laptop README.md"
 else
    curl -fsSL https://raw.githubusercontent.com/jcarbaugh/repython/master/repython.sh | sh

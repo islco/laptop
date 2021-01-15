@@ -79,34 +79,34 @@ fi
 #
 
 ## Browsers
-(brew cask uninstall --force 'firefox' || :)
-(brew cask uninstall --force 'google-chrome' || :)
+(brew uninstall --force --cask 'firefox' || :)
+(brew uninstall --force --cask 'google-chrome' || :)
 
 ## Git
-(brew cask uninstall --force 'github' || :)
+(brew uninstall --force --cask 'github' || :)
 
 ## Terminal
-(brew cask uninstall --force 'iterm2' || :)
+(brew uninstall --force --cask 'iterm2' || :)
 
 ## Editors
-(brew cask uninstall --force 'pycharm-ce' || :)
-(brew cask uninstall --force 'visual-studio-code' || :)
+(brew uninstall --force --cask 'pycharm-ce' || :)
+(brew uninstall --force --cask 'visual-studio-code' || :)
 
 ## Communication
-(brew cask uninstall --force 'slack' || :)
+(brew uninstall --force --cask 'slack' || :)
 
 ## Utilities
-(brew cask uninstall --force 'docker' || :)
+(brew uninstall --force --cask 'docker' || :)
 (brew uninstall --force 'docker-compose' || :)
 
 ## AWS
-(brew cask uninstall --force 'aws-vault' || :)
+(brew uninstall --force --cask 'aws-vault' || :)
 
 ## Security
-(brew cask uninstall --force '1password' || :)
+(brew uninstall --force --cask '1password' || :)
 
 ## Font for ZSH
-(brew cask uninstall --force 'font-meslo-lg-nerd-font' || :)
+(brew uninstall --force --cask 'font-meslo-lg-nerd-font' || :)
 
 #
 # Remove .laptop.local overrides
