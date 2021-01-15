@@ -38,9 +38,10 @@ cask_install_or_skip() {
   if open -Ra "$app_name"; then
     fancy_echo "$app_name is already installed - skipping"
   else
-    brew cask install $cask_name
+    brew install --cask $cask_name
   fi
 }
+
 
 create_file() {
   local file="$1"
@@ -201,16 +202,16 @@ cask_install_or_skip 'Docker' 'docker'
 brew install 'docker-compose'
 
 ## AWS
-brew cask install 'aws-vault'
+brew install --cask 'aws-vault'
 
 ## Security
 cask_install_or_skip '1Password 7' '1password'
 
 ## Font for ZSH
 if system_profiler SPFontsDataType | grep -i "Full Name: Meslo LG" > /dev/null 2>&1; then
-    brew cask uninstall 'font-meslo-lg-nerd-font'; brew cask install 'font-meslo-lg-nerd-font'
+    brew uninstall --cask 'font-meslo-lg-nerd-font'; brew install --cask 'font-meslo-lg-nerd-font'
 else
-    brew cask install 'font-meslo-lg-nerd-font'
+    brew install --cask 'font-meslo-lg-nerd-font'
 fi
 
 #
