@@ -236,12 +236,16 @@ else
 fi
 
 ## Node.js
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
-append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+if [[ `uname -m` == 'arm64' ]]; then
+   echo "As of Jan 22, 2021 - Node.js does not compile against the M1 Silicon chipset - follow current community workarounds (a la Rosetta 2)."
+else
+   wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
+   append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
 
-. $HOME/.nvm/nvm.sh
-nvm install 10.15.3
+   . $HOME/.nvm/nvm.sh
+   nvm install 10.15.3
+fi
 
 #
 # Copy default configs + postinstall files
