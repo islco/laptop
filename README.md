@@ -18,8 +18,8 @@ We support:
 
 Older versions may work but aren't actively tested.
 
-Before proceeding with the installation steps below, please ensure both Homebrew and
-the MacOS CommandLineTools have been installed. This can be done by executing the
+:warning: Before proceeding with the installation steps below, please ensure both Homebrew and
+the Xcode Command Line Tools have been installed. This can be done by executing the
 following commands:
 
 ```sh
@@ -30,7 +30,7 @@ following commands:
 xcode-select --install
 ```
 
-For troubleshooting either of the above, see upstream vendor docs/resources.
+_For troubleshooting either of the above, see upstream vendor docs/resources._
 
 Install
 -------
