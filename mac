@@ -94,7 +94,8 @@ xcode-select -p > /dev/null 2>&1
 
 if [ $? -ne 0 ]
 then
-    xcode-select --install
+    echo "Please install MacOS CommandLineTools..."
+    exit 1
 fi
 
 #
@@ -127,11 +128,8 @@ create_file "$LAPTOPRC"
 #
 
 if ! command -v brew >/dev/null; then
-  fancy_echo "Installing Homebrew ..."
-    curl -fsSL \
-      'https://raw.githubusercontent.com/Homebrew/install/master/install.sh' | sh
-
-
+  fancy_echo "Please install Homebrew ..."
+  exit 1
 else
   fancy_echo "Homebrew already installed. Skipping ..."
 fi

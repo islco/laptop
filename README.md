@@ -18,6 +18,20 @@ We support:
 
 Older versions may work but aren't actively tested.
 
+Before proceeding with the installation steps below, please ensure both Homebrew and
+the MacOS CommandLineTools have been installed. This can be done by executing the
+following commands:
+
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+```sh
+xcode-select --install
+```
+
+For troubleshooting either of the above, see upstream vendor docs/resources.
+
 Install
 -------
 
@@ -53,12 +67,12 @@ To revert the state of your local development environment, removing the applicat
 and configuration installed by _Laptop_, we have provided a rudimentary
 script to uninstall _Laptop_.
 
-It presumes that you may have installed additional packages via Homebrew and will 
-target the applications installed by _Laptop_ only. Likewise, it presumes 
-that you may wish to retian Homebrew itself.
+It presumes that you may have installed additional packages via Homebrew and will
+target the applications installed by _Laptop_ only. Likewise, it presumes
+that you may wish to retain Homebrew itself.
 
 In your Terminal window (NOTE: Do not select iTerm for this task, as it will be removed!),
- copy and paste each of these two commands one at a time, then press `return` after 
+ copy and paste each of these two commands one at a time, then press `return` after
  each one to download and execute the script, respectively:
 
 ```sh
@@ -143,8 +157,8 @@ What it sets up
 * [Docker for Mac] for running containers 🐋
 
 [Homebrew]: http://brew.sh/
-[wget]: https://www.gnu.org/software/wget/ 
-[aws-vault]: https://github.com/99designs/aws-vault 
+[wget]: https://www.gnu.org/software/wget/
+[aws-vault]: https://github.com/99designs/aws-vault
 [Stripe CLI]: https://stripe.com/docs/stripe-cli
 [iTerm2]: https://iterm2.com/
 [Starship]: https://starship.rs/
@@ -159,7 +173,7 @@ What it sets up
 [Slack]: https://slack.com/
 [Python 3]: https://www.python.org/
 [Pyenv]: https://github.com/pyenv/pyenv
-[Pipenv]: https://pipenv.pypa.io/en/latest/ 
+[Pipenv]: https://pipenv.pypa.io/en/latest/
 [Node.js]: http://nodejs.org/
 [NPM]: https://www.npmjs.org/
 [NVM]: https://github.com/nvm-sh/nvm
