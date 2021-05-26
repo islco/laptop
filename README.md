@@ -1,8 +1,6 @@
 Laptop
 ======
 
-...testing...
-
 _Laptop_ is a script to set up an MacOS computer for web development.
 
 It can be run multiple times on the same machine safely.
@@ -12,7 +10,10 @@ based on what is already installed on the machine.
 Requirements
 ------------
 
-:warning: At this time, MacOS Big Sur is NOT supported - proceed at your own risk!
+:warning: At this time, this installation script is not fully compatabile with 
+MacOS Big Sur due to upstream vendor complication - proceed at your own risk!
+
+Should you find yourself on a Big Sur machine with an Intel chip, see the section below titled: `Big Sur (Intel) Addendum`
 
 We support:
 
@@ -21,8 +22,10 @@ We support:
 Older versions may work but aren't actively tested.
 
 :warning: Before proceeding with the installation steps below, please ensure both Homebrew and
-the Xcode Command Line Tools have been installed. This can be done by executing the
-following commands:
+the Xcode Command Line Tools have been installed and are updated to the latest versions.
+
+
+This can be done by executing the following commands:
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -31,6 +34,14 @@ following commands:
 ```sh
 xcode-select --install
 ```
+
+NOTE: If you see the following message after executing the above command, double-check the System Preferences' 'Sofware Update' option to manually
+confirm whether any XCode Command Line Tool updates are available:
+
+``` sh
+xcode-select: error: command line tools are already installed, use "Software Update" to install updates
+```
+
 
 _For troubleshooting either of the above, see upstream vendor docs/resources._
 
@@ -229,6 +240,26 @@ cd ~
 
 # Download the sample file to your computer
 curl --remote-name https://raw.githubusercontent.com/Mariana-Tek/laptop/master/.laptop.local
+```
+
+Big Sur (Intel) Addendum
+------------------------
+
+Since late 2020, with the launch of Apple's Big Sur OS release, there are a number of machine-specific errors one may encounter in relation to Python dependencies that are documented widely in upstream vendor bug tickets and across Github.
+
+As we can't predict either when or if these will be resolved, the following is a rough guide to the post-`laptop` script steps we currently (as of May 2021) recommend:
+
+```sh
+# Install Python tools
+brew install pyenv
+brew install pipenv
+
+# Install Python 3.6.8
+# NOTE: 
+# This is where the bulk of the issues arise - if you are installing most Python versions > 3.8, you may find that a simple `pyenv install 3.8` or `pyenv install 3.9` is sufficient
+# However, for versions < 3.8, additional work is needed for the OS to compile Python properly. Shown below is the command needed as of May 2021 for Python 3.6.8 (our primary Python
+# version for the Mariana Django project)
+CFLAGS=“-I$(brew --prefix openssl)/include -I$(brew --prefix bzip2)/include -I$(brew --prefix readline)/include -I$(xcrun --show-sdk-path)/usr/include” LDFLAGS=“-L$(brew --prefix openssl)/lib -L$(brew --prefix readline)/lib -L$(brew --prefix zlib)/lib -L$(brew --prefix bzip2)/lib” pyenv install --patch 3.6.8 < <(curl -sSL https://github.com/python/cpython/commit/8ea6353.patch\?full_index\=1)
 ```
 
 Credits
