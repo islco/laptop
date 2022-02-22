@@ -57,7 +57,6 @@ fi
 #
 
 ## services
-brew services stop --all
 (brew uninstall --force 'postgresql@11' || :)
 (brew uninstall --force 'stripe/stripe-cli/stripe' || :)
 

@@ -151,7 +151,6 @@ brew tap 'homebrew/cask-fonts'
 #
 
 ## services
-brew services stop --all
 brew_install_or_upgrade 'postgresql@11'
 append_to_file "$LAPTOPRC" 'export PATH="/usr/local/opt/postgresql@11/bin:$PATH"'
 brew_install_or_upgrade 'stripe/stripe-cli/stripe'
