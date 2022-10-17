@@ -58,11 +58,9 @@ fi
 
 ## services
 (brew uninstall --force 'postgresql@11' || :)
-(brew uninstall --force 'stripe/stripe-cli/stripe' || :)
 
 ## command line utilities
 (brew uninstall --force 'git' || :)
-(brew uninstall --force 'heroku' || :)
 (brew uninstall --force 'wget' || :)
 
 ## zsh prompt
@@ -78,7 +76,6 @@ fi
 #
 
 ## Browsers
-(brew uninstall --force --cask 'firefox' || :)
 (brew uninstall --force --cask 'google-chrome' || :)
 
 ## Git
@@ -88,7 +85,6 @@ fi
 (brew uninstall --force --cask 'iterm2' || :)
 
 ## Editors
-(brew uninstall --force --cask 'pycharm-ce' || :)
 (brew uninstall --force --cask 'visual-studio-code' || :)
 
 ## Communication
@@ -97,9 +93,6 @@ fi
 ## Utilities
 (brew uninstall --force --cask 'docker' || :)
 (brew uninstall --force 'docker-compose' || :)
-
-## AWS
-(brew uninstall --force --cask 'aws-vault' || :)
 
 ## Security
 (brew uninstall --force --cask '1password' || :)
@@ -114,46 +107,6 @@ fi
 if [ -f $HOME/.laptop.local ]; then
   rm $HOME/.laptop.local
 fi
-
-#
-# Install non-Homebrew packages/libraries
-#
-
-## Python
-
-if [ -f /usr/local/bin/pyenv ]; then
-  for v in `pyenv versions --bare`; do
-    pyenv uninstall -f $v
-  done
-fi
-
-brew uninstall --force pipx
-brew uninstall --force pipenv
-brew uninstall --force pyenv
-brew uninstall --force --ignore-dependencies python@3.9
-brew uninstall --force --ignore-dependencies python@3.8
-brew uninstall --force --ignore-dependencies python
-brew uninstall --force --ignore-dependencies python2
-brew uninstall --force --ignore-dependencies python3
-
-bins=('easy_install' 'pew' 'pip' 'pip2' 'pip3' 'pipenv' 'pipx'
-      'python' 'python-build' 'python-config' 'python2*' 'python3*'
-      'virtualenv' 'virtualenv-clone' 'virtualenvwrapper.sh')
-for b in "${bins[@]}"; do
-  rm -f /usr/local/bin/$b
-  rm -f /usr/local/opt/python/libexec/bin
-done
-
-rm -rf /usr/local/lib/python2*
-rm -rf /usr/local/lib/python3*
-rm -rf /usr/local/opt/python*
-
-test -d $HOME/.virtualenvs && rm -rf $HOME/.virtualenvs
-test -d $HOME/.local && rm -rf $HOME/.local && mkdir $HOME/.local
-
-# NVM
-# https://github.com/nvm-sh/nvm/issues/298
-rm -rf "$HOME/.nvm"
 
 #
 # Remove editorconfig

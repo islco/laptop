@@ -153,11 +153,9 @@ brew tap 'homebrew/cask-fonts'
 ## services
 brew_install_or_upgrade 'postgresql@11'
 append_to_file "$LAPTOPRC" 'export PATH="/usr/local/opt/postgresql@11/bin:$PATH"'
-brew_install_or_upgrade 'stripe/stripe-cli/stripe'
 
 ## command line utilities
 brew_install_or_upgrade 'git'
-brew_install_or_upgrade 'heroku'
 brew_install_or_upgrade 'wget'
 
 ## zsh prompt
@@ -170,7 +168,6 @@ mkdir -p ~/.config && touch ~/.config/starship.toml
 #
 
 ## Browsers
-cask_install_or_skip 'Firefox' 'firefox'
 cask_install_or_skip 'Google Chrome' 'google-chrome'
 
 ## Git
@@ -180,7 +177,6 @@ cask_install_or_skip 'Github Desktop' 'github'
 cask_install_or_skip 'iTerm' 'iterm2'
 
 ## Editors
-cask_install_or_skip 'PyCharm CE' 'pycharm-ce'
 cask_install_or_skip 'Visual Studio Code' 'visual-studio-code'
 ### configure VSCode
 code --install-extension mikestead.dotenv               # DotENV
@@ -198,9 +194,6 @@ cask_install_or_skip 'Slack' 'slack'
 cask_install_or_skip 'Docker' 'docker'
 brew install 'docker-compose'
 
-## AWS
-brew install --cask 'aws-vault'
-
 ## Security
 cask_install_or_skip '1Password 7' '1password'
 
@@ -217,31 +210,6 @@ fi
 
 if [ -f $HOME/.laptop.local ]; then
   /bin/bash $HOME/.laptop.local
-fi
-
-#
-# Install non-Homebrew packages/libraries
-#
-
-## Python
-if [[ "$OS_VERSION" > 11.0.* ]]; then
-    echo "Skipping - please review MacOS Big Sur instructions in Laptop README.md"
-else
-   curl -fsSL https://raw.githubusercontent.com/jcarbaugh/repython/master/repython.sh | sh
-   append_to_file "$HOME/.zshrc" 'eval "$(pyenv init -)"'
-   pyenv install 3.6.8
-fi
-
-## Node.js
-if [[ `uname -m` == 'arm64' ]]; then
-   echo "As of Jan 22, 2021 - Node.js does not compile against the M1 Silicon chipset - follow current community workarounds (a la Rosetta 2)."
-else
-   wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | sh
-   append_to_file "$LAPTOPRC" 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
-
-   . $HOME/.nvm/nvm.sh
-   nvm install 10.15.3
 fi
 
 #
